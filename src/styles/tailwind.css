@@ -1,0 +1,39 @@
+.tw-w-100 {
+  width: 100vw;
+}
+
+.tw-h-100 {
+  height: 100vh;
+}
+
+.tw-text-grey {
+  color: #aaa;
+}
+
+.tw-bg-40 {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.tw-bg-100 {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.tw-text-brown {
+  color: salmon;
+}
+
+.tw-text-red {
+  color: red;
+}
+
+.tw-text-transparent {
+  color: transparent;
+}
+
+.tw-cursor-default {
+  cursor: default;
+}
+
+.tw-z-1 {
+  z-index: 1;
+}

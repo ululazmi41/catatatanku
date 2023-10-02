@@ -1,0 +1,19 @@
+.loading-wrapper {
+  display: flex;
+  position: absolute;
+
+  width: 100%;
+  /* min-height: 500px; */
+  height: 100%;
+
+  gap: 8px;
+  margin-bottom: 48px;
+  justify-content: center;
+
+  z-index: 1;
+}
+
+.loading {
+  margin: auto;
+  color: #666;
+}

@@ -1,0 +1,110 @@
+.note-input {
+  margin: 0 auto; 
+  padding: 34px 0 0;
+  max-width: 600px;
+  margin-bottom: 48px;
+}
+
+.note-input textarea {
+  resize: none;
+}
+
+.note-input input,
+.note-input textarea {
+  border: none;
+  display: block;
+  width: 100%;
+}
+
+.note-input input:focus,
+.note-input textarea:focus {
+  border: none;
+  outline: none;
+}
+
+.note-input__title {
+  font-size: 14pt;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.note-input__title__char-limit {
+  /* color: #aaa; */
+  padding: 0;
+  font-size: 14px;
+  text-align: left;
+  pointer-events: none;
+}
+
+.note-input__date-wrapper {
+  margin: 4px 0;
+  
+  display: flex;
+  justify-content: space-between;
+}
+
+.note-input__date {
+  color: #666;
+  margin: 8px 0;
+  font-size: 10pt;
+  font-weight: bold;
+
+  cursor: default;
+}
+
+.tag {
+  font-size: 10pt;
+  border-radius: 8px;
+  padding: 4px 8px;
+  width: max-content;
+
+  color: #9da010;
+  background: #FDFFB4;
+  border: 1px #B9BC0E solid;
+
+  display: none;
+  align-items: center;
+
+  cursor: default;
+}
+
+.note-input__body {
+  margin: 0;
+  padding: 0;
+  min-height: 400px;
+}
+
+.note-input__body::placeholder {
+  font-size: 12pt;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #666;
+  font-weight: bold;
+}
+
+.note-input button {
+  width: 100px;
+  padding: 8px;
+  display: block;
+  background-color: #24B655;
+  
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  
+  color: white;
+  font-weight: bold;
+  
+  cursor: pointer;
+}
+
+.note-input button:hover {
+  background-color: #37bd63;
+}
+
+@media only screen and (min-width: 800px) {
+  .note-search input {
+    min-width: 400px;
+  }
+}
