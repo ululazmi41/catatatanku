@@ -1,6 +1,6 @@
 enum Showing {
   Notes,
-  Archive,
+  Archives,
   Bin,
 }
 

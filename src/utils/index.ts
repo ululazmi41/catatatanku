@@ -45,7 +45,7 @@ const getInitialData = (): Note[] => ([
   },
 ]);
 
-const showFormattedDate = (date: number) => {
+const showFormattedDate = (date: number | string) => {
   const options: object = {
     weekday: "long",
     year: "numeric",

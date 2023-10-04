@@ -1,6 +1,7 @@
 enum Page {
   Home,
-  Notes,
+  Note,
+  Empty,
 }
 
 export { Page };

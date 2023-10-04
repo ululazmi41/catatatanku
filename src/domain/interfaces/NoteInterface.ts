@@ -1,9 +1,9 @@
-interface Note {
+interface NoteInterface {
   id: number;
   title: string;
   body: string;
-  createdAt: string;
+  createdAt: number | string;
   archived: boolean;
 }
 
-export type { Note };
+export type { NoteInterface };
