@@ -5,6 +5,8 @@ class Note implements NoteInterface {
   public body: string;
   public title: string;
   public archived: boolean;
+  public deleted: boolean;
+  public deleteAt: string | number | null;
   public createdAt: number | string;
 
   constructor({
@@ -12,6 +14,8 @@ class Note implements NoteInterface {
     body,
     title,
     archived,
+    deleted,
+    deleteAt,
     createdAt,
   }: NoteInterface) {
     this.id = id;
@@ -19,6 +23,8 @@ class Note implements NoteInterface {
     this.title = title;
     this.archived = archived;
     this.createdAt = createdAt;
+    this.deleted = deleted;
+    this.deleteAt = deleteAt;
   }
 }
 

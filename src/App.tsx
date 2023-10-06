@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState, useRef } from "react";
 
 // Utils
 import { getInitialData, showFormattedDate } from "./utils/index.js";
@@ -30,23 +30,81 @@ function App() {
   const [page, setPage] = useState<Page>(Page.Empty);
   const [notes, setNotes] = useState<NoteInterface[]>(getInitialData());
   const [showing, setShowing] = useState<Showing>(Showing.Notes);
-  const [toasters, setToasters] = useState<Toaster[]>();
+  const [toasters, setToasters] = useState<Toaster[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Refs
+  const currentTimeout = useRef<number>()
 
   useEffect(() => {
     // init
-    renderPageFromURL()
+    renderPageFromURL();
 
-    window.addEventListener('popstate', renderPageFromURL)
+    window.addEventListener("popstate", renderPageFromURL);
     return () => {
-      window.removeEventListener('popstate', renderPageFromURL)
+      window.removeEventListener("popstate", renderPageFromURL);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (currentTimeout.current) {
+      clearTimeout(currentTimeout.current)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+
+    const deletedNotes: NoteInterface[] = notes.reverse().filter((note) => note.deleted);
+
+    const recursive = (index: number) => {
+      const currentNote = deletedNotes[index];
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      new Promise((resolve, _) => {
+        const durationInSecond = new Date(currentNote.deleteAt!).getSeconds() - new Date().getSeconds()
+        currentTimeout.current = setTimeout(() => {
+          const copiedNotes = notes.slice().filter((note) => note.id !== currentNote.id)
+          setNotes(copiedNotes)
+
+          resolve(true)
+          recursive(index + 1)
+          console.log(`removed ${currentNote.id}`)
+        }, durationInSecond * 1000)
+      })
+    };
+    if (deletedNotes.length > 0) {
+      recursive(0)
+    }
+  }, [notes]);
+
+  useEffect(() => {
+    if (toasters.length > 0) {
+      //
+    }
+  }, [toasters])
 
   const handleDelete = (id: number) => {
-    const filteredNotes = notes.filter((note) => note.id !== id);
-    setNotes(filteredNotes);
+    const date = new Date();
+    const added6Seconds = new Date(date.setSeconds(date.getSeconds() + 6))
+      .toISOString();
+
+    const note = notes.find((note) => note.id === id);
+
+    if (!note) {
+      throw new Error(`handleDelete Error: Unknown id: ${id}`);
+    }
+
+    const modifiedNote = {
+      ...note,
+      deleted: true,
+      deleteAt: added6Seconds,
+    };
+
+    const copiedNotes = notes.slice();
+    const noteIndex = copiedNotes.findIndex((note) => note.id === id);
+    copiedNotes[noteIndex] = modifiedNote;
+
+    setNotes(copiedNotes);
+
+    // const filteredNotes = notes.filter((note) => note.id !== id);
+    // setNotes(filteredNotes);
 
     addToaster("delete");
     console.log(`Note with id of ${id} deleted`);
@@ -89,12 +147,12 @@ function App() {
   };
 
   const navigateTo = (page: string) => {
-    const path = page.split('/')[0]
-    if (path === '') {
-      setPage(Page.Home)
+    const path = page.split("/")[0];
+    if (path === "") {
+      setPage(Page.Home);
       history.pushState({}, "", ``);
-    } else if (path === 'note') {
-      setPage(Page.Note)
+    } else if (path === "note") {
+      setPage(Page.Note);
       history.pushState({}, "", `/${page}`);
     } else {
       throw new Error(`navigateTo: Error -> Unknown page: ${page}`);
@@ -102,7 +160,7 @@ function App() {
   };
 
   const renderPageFromURL = () => {
-    const path = window.location.pathname.split('/')[1]
+    const path = window.location.pathname.split("/")[1];
     if (path === "") {
       setPage(Page.Home);
     } else if (path === "note") {
@@ -110,7 +168,7 @@ function App() {
     } else {
       throw new Error(`renderPageFromURL: Error -> Unknown page: ${page}`);
     }
-  }
+  };
 
   const renderLoading = (ms: number) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -123,7 +181,7 @@ function App() {
     });
   };
 
-  const getNoteById = (id: number) : NoteInterface | null => {
+  const getNoteById = (id: number): NoteInterface | null => {
     const note = notes.find((note) => note.id === id);
 
     if (note) {
@@ -140,6 +198,8 @@ function App() {
       body: content,
       createdAt: showFormattedDate(+new Date()),
       archived: false,
+      deleted: false,
+      deleteAt: null,
     };
 
     setNotes([

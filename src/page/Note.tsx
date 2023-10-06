@@ -25,7 +25,7 @@ function NotePage({
   getNoteById: (id: number) => Note | null;
   renderLoading: (ms: number) => void;
   handleSubmit: (title: string, body: string) => void;
-  handleUpdate: (note: Note) => void;
+  handleUpdate: (note: NoteInterface) => void;
   navigateTo: (page: string) => void;
   setShowing: React.Dispatch<React.SetStateAction<Showing>>;
   isLoading: boolean;
@@ -36,6 +36,8 @@ function NotePage({
     title: "",
     archived: false,
     createdAt: +new Date(),
+    deleted: false,
+    deleteAt: null,
   });
 
   const [note, setNote] = useState<NoteInterface>(defaultNote);

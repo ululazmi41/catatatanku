@@ -32,40 +32,37 @@ function Home({
 
   useEffect(() => {
     resetNavigationButton(showing);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showing]);
 
   const resetNavigationButton = (showing: Showing) => {
     const notes = document.querySelector("#notes");
     const archives = document.querySelector("#archives");
+    const bin = document.querySelector("#bin");
+
+    if (notes) {
+      notes.className = "notes-app__button notes-app__button__idle";
+    } else {
+      throw new Error(`Element not found: notes button`);
+    }
+
+    if (archives) {
+      archives.className = "notes-app__button notes-app__button__idle";
+    } else {
+      throw new Error(`Element not found: archives button`);
+    }
+
+    if (bin) {
+      bin.className = "notes-app__button notes-app__button__idle";
+    } else {
+      throw new Error(`Element not found: bin button`);
+    }
 
     if (showing === Showing.Notes) {
-      if (notes) {
-        notes.className = "notes-app__button notes-app__button__selected";
-      } else {
-        throw new Error(`Notes element not found: ${notes}`);
-      }
-
-      if (archives) {
-        archives.className = "notes-app__button notes-app__button__idle";
-      } else {
-        throw new Error(`Archives element not found: ${archives}`);
-      }
+      notes.className = "notes-app__button notes-app__button__selected";
     } else if (showing === Showing.Archives) {
-      if (notes) {
-        notes.className = "notes-app__button notes-app__button__idle";
-      } else {
-        throw new Error(`Notes element not found: ${notes}`);
-      }
-
-      if (archives) {
-        archives.className = "notes-app__button notes-app__button__selected";
-      } else {
-        throw new Error(`Archives element not found: ${archives}`);
-      }
+      archives.className = "notes-app__button notes-app__button__selected";
     } else if (showing === Showing.Bin) {
-      // TODO:
-      console.log("Unimplemented Code");
+      bin.className = "notes-app__button notes-app__button__selected";
     } else {
       throw new Error(`Unknown showing notes: ${showing}`);
     }
@@ -94,13 +91,13 @@ function Home({
   const renderLoadingNote = (ms: number) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return new Promise((resolve, _) => {
-        setIsLoading(true);
+      setIsLoading(true);
 
-        setTimeout(() => {
-          setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
 
-          resolve(true);
-        }, ms);
+        resolve(true);
+      }, ms);
     });
   };
 
@@ -125,31 +122,43 @@ function Home({
   };
 
   const showNotes = async () => {
-    setIsBlur(false) // TODO: Simplify
-    resetNavigationButton(Showing.Notes)
+    setIsBlur(false); // TODO: Simplify
 
-    await renderLoadingNote(750)
-    setShowing(Showing.Notes)
+    await renderLoadingNote(750);
+    setShowing(Showing.Notes);
   };
 
   const showArchives = async () => {
-    setIsBlur(false) // TODO: simplify
-    resetNavigationButton(Showing.Archives)
-    
-    await renderLoadingNote(750)
-    setShowing(Showing.Archives)
+    setIsBlur(false); // TODO: simplify
+
+    await renderLoadingNote(750);
+    setShowing(Showing.Archives);
+  };
+
+  const showBin = async () => {
+    setIsBlur(false); // TODO: simplify
+
+    await renderLoadingNote(750);
+    setShowing(Showing.Bin);
+  };
+
+  const handleNavigateToAdd = async () => {
+    await renderLoading(250);
+    navigateTo("note");
   };
 
   /**
    * Handle Notes to Render
    */
   const handleNotes = () => {
-    let innerNotes: NoteInterface[] = [];
+    let bin: NoteInterface[] = [];
     let archives: NoteInterface[] = [];
+    let innerNotes: NoteInterface[] = [];
 
     if (search === "") {
-      innerNotes = notes.filter((note) => note.archived === false);
-      archives = notes.filter((note) => note.archived === true);
+      innerNotes = notes.filter((note) => !note.archived && !note.deleted);
+      archives = notes.filter((note) => note.archived);
+      bin = notes.filter((note) => note.deleted);
     } else {
       const tempNotes = notes.filter((note) => note.archived === false);
       innerNotes = tempNotes.filter((note) => {
@@ -184,14 +193,12 @@ function Home({
       return innerNotes;
     } else if (showing === Showing.Archives) {
       return archives;
+    } else if (showing === Showing.Bin) {
+      return bin;
     } else {
+      console.warn("TODO: Unimplemented code");
       return [];
     }
-  };
-
-  const handleNavigateToAdd = async () => {
-    await renderLoading(250)
-    navigateTo('note')
   };
 
   return (
@@ -206,12 +213,9 @@ function Home({
         </button>
         <div className="note-app__body__actions">
           <div className="note-app__body__buttons">
-            <button id="notes" onClick={showNotes} className="">
-              Catatan
-            </button>
-            <button id="archives" onClick={showArchives} className="">
-              Arsip
-            </button>
+            <button id="notes" onClick={showNotes}>Catatan</button>
+            <button id="archives" onClick={showArchives}>Arsip</button>
+            <button id="bin" onClick={showBin}>Arsip</button>
           </div>
           <NoteSearch onChange={handleSearch} />
         </div>
